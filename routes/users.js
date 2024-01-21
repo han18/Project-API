@@ -17,7 +17,8 @@ router.get("/:id", async (req, res) => {
   else res.json(user);
 });
 
-//=============
+//======= Getting users by their username ===
+// this didn't work
 
 router.get("/:username", async (req, res) => {
   const user = await User.findOne(req.params.username);
@@ -26,7 +27,7 @@ router.get("/:username", async (req, res) => {
   else res.json(user);
 });
 
-//================
+//=========================
 
 //==== POST METHOD ROUTE=========
 //POST: Creates New Users
