@@ -41,6 +41,10 @@ const usersSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    admin: {
+      type: String,
+      default: true,
+    },
   },
   // hashing a password
   {
