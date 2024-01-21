@@ -24,9 +24,6 @@ app.get("/", (req, res) => {
   res.send("This is the main route");
 });
 
-app.get("/user", (req, res) => {
-  res.send("This is a test");
-});
 app.listen(PORT, () => {
   console.log(`Server at port: ${PORT}`);
 });

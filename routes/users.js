@@ -19,9 +19,8 @@ router.get("/:id", async (req, res) => {
 
 //======= Getting users by their username ===
 // this didn't work
-
 router.get("/:username", async (req, res) => {
-  const user = await User.findOne(req.params.username);
+  const user = await User.find({}).populate({ path: "age" });
 
   if (!user) return res.status(404).json({ msg: "User Not Found!" });
   else res.json(user);
