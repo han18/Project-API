@@ -17,6 +17,12 @@ router.get("/:id", async (req, res) => {
   else res.json(user);
 });
 
+//=============
+
+router.get("/:username", async (req, res) => {
+  const user = await User.getUser(re.params.username);
+});
+
 //==== POST METHOD ROUTE=========
 //POST: Creates New Users
 router.post("/", async (req, res) => {
