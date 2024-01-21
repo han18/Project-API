@@ -20,8 +20,13 @@ router.get("/:id", async (req, res) => {
 //=============
 
 router.get("/:username", async (req, res) => {
-  const user = await User.getUser(re.params.username);
+  const user = await User.findOne(req.params.username);
+
+  if (!user) return res.status(404).json({ msg: "User Not Found!" });
+  else res.json(user);
 });
+
+//================
 
 //==== POST METHOD ROUTE=========
 //POST: Creates New Users
