@@ -20,7 +20,7 @@ router.get("/:id", async (req, res) => {
 //======= Getting users by their username ===
 // this didn't work
 router.get("/:username", async (req, res) => {
-  const user = await User.find({}).populate({ path: "age" });
+  const user = await User.find(req.params.username);
 
   if (!user) return res.status(404).json({ msg: "User Not Found!" });
   else res.json(user);
@@ -40,13 +40,24 @@ router.post("/", async (req, res) => {
 });
 
 //Jan 19, 2024
-//PUT: ==== Updates a user
+//PUT: ==== Updates a user and restricting password
 router.put("/:id", async (req, res) => {
-  const { id } = req.params; //
-  const { body } = req;
-  const updatedUser = await User.findByIdAndUpdate(id, body, { new: true });
+  try {
+    const { id } = req.params;
+    const { body } = req;
 
-  res.json(updatedUser);
+    //! Stops request from updating the user's password
+    if (body.password) {
+      delete body.password;
+      console.log("Password removed from body");
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, body, { new: true });
+    res.json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    res.json({ msg: "User Not found!" });
+  }
 });
 
 //DELETE:
@@ -60,4 +71,64 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+//================== Updating Password====
+/**
+ * PUT /:id/update-password
+ * @param: client needs to send body:
+ * {
+ *  currentPassword: "my old password"
+ *  newPassword: "my new password"
+ * }
+ *
+ * We can use NodeMailer here to send emails before updating the password
+ */
+router.put("/:id/update-password", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { currentPassword, newPassword } = req.body;
+
+    // find the user to update
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ msg: "User not found!" });
+
+    // verify the old password with the password hash in db
+    const passwordMatched = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+    if (!passwordMatched) {
+      return res.status(401).json({ msg: "Authentication Error" });
+    }
+
+    console.log("password matched!");
+
+    // hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+    // set the old password hash to the newPassword hash
+    await User.findByIdAndUpdate(id, { password: hashedPassword });
+
+    res.json({ msg: "User password updated", user });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 export default router;
+
+// this is the old code for getting the username
+// router.get("/:username", async (req, res) => {
+//   const user = await User.find({}).populate({ path: "age" });
+
+//   if (!user) return res.status(404).json({ msg: "User Not Found!" });
+//   else res.json(user);
+// });
+
+// previous code for the put method
+// router.put("/:id", async (req, res) => {
+//   const { id } = req.params; //
+//   const { body } = req;
+//   const updatedUser = await User.findByIdAndUpdate(id, body, { new: true });
+
+//   res.json(updatedUser);
+// });

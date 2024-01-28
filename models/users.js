@@ -58,7 +58,7 @@ const usersSchema = new mongoose.Schema(
 // creating an index to organize data to find it easier
 usersSchema.index({ email: 1 });
 
-//======================= Bcrypt =====
+//====== Bcrypt For Password Hashing ======
 // creating a password hash pre save hook
 usersSchema.pre("save", async function (next) {
   // if the password has not been modified
