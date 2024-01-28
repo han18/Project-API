@@ -114,6 +114,34 @@ router.put("/:id/update-password", async (req, res) => {
   }
 });
 
+//=============================
+//==== Authenticating Password ==========
+
+/**
+ * POST /login
+ * @description authenticates an user with email and password
+ */
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  // find user with the provided email
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(401).json({ msg: "Invalid Credentials" });
+  }
+
+  // verify provided password with password hash from db
+  const passwordMatched = await bcrypt.compare(password, user.password);
+
+  if (!passwordMatched) {
+    return res.status(401).json({ msg: "Invalid Credentials password" });
+  }
+
+  // TODO: generate a jwt token and send it to the client
+  res.json({ msg: "User is logged in!", user });
+});
+
 export default router;
 
 // this is the old code for getting the username
