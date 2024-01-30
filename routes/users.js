@@ -17,16 +17,31 @@ router.get("/:id", async (req, res) => {
   else res.json(user);
 });
 
+//============================================
+
 //======= Getting users by their username ===
 // this didn't work
-router.get("/:username", async (req, res) => {
-  const user = await User.find(req.params.username);
+// 2. GET: Create a route to get a user by username
+router.get("/name-id/:username", async (req, res) => {
+  const username = req.params.username;
 
-  if (!user) return res.status(404).json({ msg: "User Not Found!" });
-  else res.json(user);
+  try {
+    // Find the user by username in the database
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ msg: "Username not found" });
+    }
+
+    // return it as JSON
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(404).json({ msg: "Error" });
+  }
 });
 
-//=========================
+//================ End of Username ============
 
 //==== POST METHOD ROUTE=========
 //POST: Creates New Users
