@@ -22,7 +22,7 @@ router.get("/:id", async (req, res) => {
 //======= Getting users by their username ===
 // this didn't work
 // 2. GET: Create a route to get a user by username
-router.get("/name-id/:username", async (req, res) => {
+router.get("/username/:username", async (req, res) => {
   const username = req.params.username;
 
   try {

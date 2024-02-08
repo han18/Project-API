@@ -32,15 +32,6 @@ const usersSchema = new mongoose.Schema(
       maxLength: 50,
       required: true,
     },
-    age: {
-      type: Number,
-      min: 18,
-      max: 100,
-    },
-    channel: {
-      type: Boolean,
-      default: false,
-    },
   },
   // hashing a password
   {
